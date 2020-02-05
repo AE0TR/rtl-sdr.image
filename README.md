@@ -4,4 +4,6 @@ A docker container for running the customized rtl-sdr tools from [https://www.rt
 
 ## Usage
 
-`docker run -d -p 1234:1234 --privileged -v /dev/bus/usb:/dev/bus/usb --name rtl_tcp dennisdunn/rtl-sdr-blog rtl_tcp -a 0.0.0.0`
+On a raspberrypi 3:
+
+` docker run --rm --device /dev/bus/usb/001/005 dennisdunn/rtl-sdr-blog:arm rtl_test`
