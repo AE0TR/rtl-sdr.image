@@ -1,33 +1,32 @@
-FROM debian:buster-slim as base
-
-RUN apt update
-
-FROM base as dev
-
-RUN apt install -y git gcc cmake make
-
-FROM dev as build
+FROM alpine as build
 
 WORKDIR /var/build
 
-RUN apt install -y libusb-1.0-0-dev; \
-    git clone https://github.com/rtlsdrblog/rtl-sdr-blog.git; \
+RUN apk add --no-cache musl-dev gcc make cmake pkgconf git libusb-dev
+
+RUN git clone https://github.com/rtlsdrblog/rtl-sdr-blog.git; \
     cd rtl-sdr-blog; \
     mkdir build; \
     cd build; \
     cmake .. -DINSTALL_UDEV_RULES=ON; \
     make; \
-    make install; \
-    cp ../rtl-sdr.rules /etc/udev/rules.d/; \
-    ldconfig; \
-    tar czvf /var/build/librtlsdr.tgz /usr/local/lib
+    make install; 
 
-FROM base
+FROM build as archive
 
-COPY --from=build /var/build/librtlsdr.tgz .
+WORKDIR /var/build
+
+RUN tar -czvf librtlsdr.tgz /usr/local/lib
+
+FROM alpine
+
+WORKDIR /
+
 COPY --from=build /usr/local/bin/rtl* /usr/local/bin/
+COPY --from=archive /var/build/librtlsdr.tgz .
 
-RUN apt install -y libusb-1.0-0; \
-    tar xzvf librtlsdr.tgz; \
+RUN apk add --no-cache libusb; \
+    tar -xzvf librtlsdr.tgz; \
     ldconfig; \
     rm *.tgz
+    
