@@ -1,4 +1,4 @@
-FROM alpine as build
+FROM arm32v7/alpine as build
 
 WORKDIR /var/build
 
@@ -18,7 +18,7 @@ WORKDIR /var/build
 
 RUN tar -czvf librtlsdr.tgz /usr/local/lib
 
-FROM alpine
+FROM arm32v7/alpine
 
 WORKDIR /
 
