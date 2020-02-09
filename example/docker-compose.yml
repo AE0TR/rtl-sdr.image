@@ -1,0 +1,17 @@
+version: "3.3"
+services:
+  mqtt:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+  sdr:
+    image: sdr
+    build: .
+    devices:
+      - "/dev/bus/usb/001/005:/dev/bus/usb/001/005"
+    entrypoint:
+      - "sh"
+      - "-c"
+      - "rtl_adsb | mosquitto_pub -l --url mqtt://mqtt/adsb"
+    depends_on:
+      - mqtt

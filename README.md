@@ -6,3 +6,8 @@ A docker container for running the modified Osmocom drivers from [rtl-sdr.com](h
 
 See [hub.docker.com/dennisdunn](https://hub.docker.com/repository/docker/dennisdunn/rtl-sdr-blog)
 
+## Example
+
+The example directory contains a docker-compose.yml that publishes the output of rtl_adsb to 
+a mosquitto server.
+
