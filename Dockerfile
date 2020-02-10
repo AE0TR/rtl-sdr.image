@@ -16,17 +16,16 @@ FROM build as archive
 
 WORKDIR /var/build
 
-RUN tar -czvf librtlsdr.tgz /usr/local/lib
+RUN tar -czvf rtlsdr.tgz /usr/local
 
 FROM alpine:latest
 
 WORKDIR /
 
-COPY --from=build /usr/local/bin/rtl* /usr/local/bin/
-COPY --from=archive /var/build/librtlsdr.tgz .
+COPY --from=archive /var/build/rtlsdr.tgz .
 
 RUN apk add --no-cache libusb; \
-    tar -xzvf librtlsdr.tgz; \
+    tar -xzvf rtlsdr.tgz; \
     ldconfig; \
     rm *.tgz
     
