@@ -1,4 +1,4 @@
-FROM alpine:latest as build
+FROM alpine:3.12.7 as build
 
 WORKDIR /var/build
 
@@ -18,7 +18,7 @@ WORKDIR /var/build
 
 RUN tar -czvf rtlsdr.tgz /usr/local
 
-FROM alpine:latest
+FROM alpine:3.12.7
 
 WORKDIR /
 
