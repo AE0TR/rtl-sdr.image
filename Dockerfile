@@ -1,8 +1,6 @@
-FROM alpine:3.12.7 as build
+FROM alpine:builder as builder
 
 WORKDIR /var/build
-
-RUN apk add --no-cache musl-dev gcc make cmake pkgconf git libusb-dev
 
 RUN git clone https://github.com/rtlsdrblog/rtl-sdr-blog.git; \
     cd rtl-sdr-blog; \
@@ -12,20 +10,15 @@ RUN git clone https://github.com/rtlsdrblog/rtl-sdr-blog.git; \
     make; \
     make install; 
 
-FROM build as archive
-
-WORKDIR /var/build
-
-RUN tar -czvf rtlsdr.tgz /usr/local
-
 FROM alpine:3.12.7
 
 WORKDIR /
 
-COPY --from=archive /var/build/rtlsdr.tgz .
 
-RUN apk add --no-cache libusb; \
-    tar -xzvf rtlsdr.tgz; \
-    ldconfig; \
-    rm *.tgz
-    
+COPY --from=builder /usr/local/bin/ /usr/local/bin 
+COPY --from=builder /usr/local/lib/ /usr/local/lib 
+
+RUN apk add --no-cache libusb
+#RUN ldconfig
+
+ENTRYPOINT ["ash"]
